@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>City Weather Alerts</title>
+<style>
+body {
+font-family: Arial, sans-serif;
+margin: 20px;
+padding: 0;
+background-color: #f0f8ff;
+}
+form {
+margin-bottom: 20px;
+}
+input {
+margin: 5px 0;
+padding: 8px;
+
+width: 200px;
+display: block;
+}
+button {
+padding: 10px 15px;
+background-color: #007bff;
+color: white;
+border: none;
+cursor: pointer;
+}
+button:hover {
+background-color: #0056b3;
+}
+#cityList div {
+background: #ffffff;
+padding: 10px;
+margin-bottom: 10px;
+border-radius: 8px;
+box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+hr {
+border: none;
+height: 1px;
+background: #ccc;
+margin-top: 10px;
+}
+
+</style>
+</head>
+<body>
+
+<h1>City Weather Alerts</h1>
+
+<form id="cityForm">
+<input type="text" id="cityName" placeholder="City Name" required />
+<input type="number" id="temperature" placeholder="Temperature (°C)" required />
+<input type="number" id="windSpeed" placeholder="Wind Speed (km/h)" required />
+<button type="submit">Add City</button>
+</form>
+
+<div id="cityList"></div>
+
+<script>
+// 1. Initialize the array
+let cityWeatherData = [];
+
+// 2. Handle form submission
+document.getElementById('cityForm').addEventListener('submit', function(event) {
+event.preventDefault(); // prevent form from submitting normally
+
+// Get values
+const name = document.getElementById('cityName').value;
+const temperature = parseFloat(document.getElementById('temperature').value);
+
+const windSpeed = parseFloat(document.getElementById('windSpeed').value);
+
+// Create new city object
+const city = {
+name,
+temperature,
+windSpeed,
+alerts: []
+};
+
+// Add to array
+cityWeatherData.push(city);
+
+// Check for alerts
+checkForAlerts(city);
+
+// Update display
+displayCities();
+
+// Reset form
+document.getElementById('cityForm').reset();
+});
+
+// 3. Function to check for alerts
+function checkForAlerts(city) {
+if (city.temperature > 35) {
+
+city.alerts.push('Heatwave');
+}
+if (city.windSpeed > 80) {
+city.alerts.push('High Wind');
+}
+}
+
+// 4. Function to display all cities
+function displayCities() {
+const cityList = document.getElementById('cityList');
+cityList.innerHTML = ''; // Clear previous list
+
+cityWeatherData.forEach(city => {
+const cityItem = document.createElement('div');
+cityItem.innerHTML = `
+<h3>${city.name}</h3>
+<p>Temperature: ${city.temperature}°C</p>
+<p>Wind Speed: ${city.windSpeed} km/h</p>
+<p><strong>Alerts:</strong> ${city.alerts.length ? city.alerts.join(', ') : 'None'}</p>
+<hr>
+`;
+cityList.appendChild(cityItem);
+});
+}
+</script>
+
+</body>
+</html>
